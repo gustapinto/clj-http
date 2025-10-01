@@ -2,17 +2,10 @@
   (:gen-class)
   (:require [ring.adapter.jetty :as jetty]
             [clj-http.http.handlers :as handlers]
-            [clj-http.http.middlewares :as middlewares]))
+            [clj-http.http.server :as server]))
 
-(defn- server
-  [request]
-  (let [method (:request-method request)
-        path (:uri request)
-        handler (case [method path]
-                  [:get "/health"] handlers/health
-                  handlers/not-found)]
-    ((middlewares/log (middlewares/json handler)) request)))
+(def routes [[:get "/health" handlers/health]])
 
 (defn -main
   [& _]
-  (jetty/run-jetty server {:port 9090}))
+  (jetty/run-jetty (server/root-handler routes) {:port 9090}))

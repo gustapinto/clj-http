@@ -2,13 +2,14 @@
   (:require [clojure.tools.logging :as logging]
             [clojure.data.json :as json]))
 
-(defn log [handler]
+(defn log
+  [handler]
   (fn [request]
     (let [method (:request-method request)
           path (:uri request)
           res (handler request)
-          status (:status res)]
-      (logging/infof "%s %s - %s" method path status)
+          status-code (:status res)]
+      (logging/infof "%s %s - %s" method path status-code)
       res)))
 
 (defn json
